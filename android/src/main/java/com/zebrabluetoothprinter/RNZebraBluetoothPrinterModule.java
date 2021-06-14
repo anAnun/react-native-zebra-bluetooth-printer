@@ -47,6 +47,7 @@ import com.zebra.sdk.printer.PrinterLanguage;
 import com.zebra.sdk.printer.SGD;
 import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
+import com.zebra.sdk.printer.ZebraPrinterLanguageUnknownException;
 import com.zebra.sdk.printer.discovery.DiscoveredPrinter;
 
 public class RNZebraBluetoothPrinterModule extends ReactContextBaseJavaModule implements ActivityEventListener,BluetoothServiceStateObserver {
@@ -420,7 +421,7 @@ public class RNZebraBluetoothPrinterModule extends ReactContextBaseJavaModule im
   }
   
   @ReactMethod
-  public void print(String device, String label,final Promise promise) {            //print functionality for zebra printer
+  public void print(String device, String label,final Promise promise, int x, int y) {            //print functionality for zebra printer
     boolean success = false;
     boolean loading = false;
     sleep(500);
@@ -444,8 +445,9 @@ public class RNZebraBluetoothPrinterModule extends ReactContextBaseJavaModule im
 
         String pl = SGD.GET("device.languages", connection);
 
-        byte[] configLabel = getConfigLabel(zebraPrinter, label);
-        connection.write(configLabel);
+        //byte[] configLabel = getConfigLabel(zebraPrinter, label);
+        //connection.write(configLabel);
+        zebraPrinter.printImage(label,x,y);
         sleep(1500);
         success = true;
         loading = false;
