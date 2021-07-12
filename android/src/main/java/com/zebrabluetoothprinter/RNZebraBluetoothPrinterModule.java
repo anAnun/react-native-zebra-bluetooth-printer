@@ -446,9 +446,16 @@ public class RNZebraBluetoothPrinterModule extends ReactContextBaseJavaModule im
         //String pl = SGD.GET("device.languages", connection);
 
         //byte[] configLabel = getConfigLabel(zebraPrinter, label);
-        //connection.write(configLabel);
-        zebraPrinter.printImage(label,x,y);
-        sleep(1500);
+          //connection.write(configLabel);
+//          if(type.equals("image")){
+//              zebraPrinter.printImage(label,x,y);
+//          } else if(type.equals("pdf")){
+        zebraPrinter.sendFileContents(label);
+        String[] fileNames = printer.retrieveFileNames();
+        for (String filename : fileNames) {
+            System.out.println(filename);
+        }
+        // sleep(1500);
         success = true;
         loading = false;
        promise.resolve(success);
