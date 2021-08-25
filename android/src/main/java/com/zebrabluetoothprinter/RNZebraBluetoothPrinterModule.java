@@ -1,4 +1,3 @@
-
 package com.zebrabluetoothprinter;
 
 import com.facebook.react.bridge.Callback;
@@ -49,6 +48,15 @@ import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 import com.zebra.sdk.printer.ZebraPrinterLanguageUnknownException;
 import com.zebra.sdk.printer.discovery.DiscoveredPrinter;
+
+import com.zebra.sdk.comm.Connection;
+import com.zebra.sdk.comm.ConnectionException;
+import com.zebra.sdk.comm.TcpConnection;
+import com.zebra.sdk.device.ZebraIllegalArgumentException;
+import com.zebra.sdk.printer.ZebraPrinter;
+import com.zebra.sdk.printer.ZebraPrinterFactory;
+import com.zebra.sdk.printer.ZebraPrinterLanguageUnknownException;
+
 
 public class RNZebraBluetoothPrinterModule extends ReactContextBaseJavaModule implements ActivityEventListener,BluetoothServiceStateObserver {
 
@@ -421,7 +429,7 @@ public class RNZebraBluetoothPrinterModule extends ReactContextBaseJavaModule im
   }
   
   @ReactMethod
-  public void print(String device, String label, int x, int y, final Promise promise) {            //print functionality for zebra printer
+  public void print(String device, String label, int x, int y, int qty, final Promise promise) {            //print functionality for zebra printer
     boolean success = false;
     boolean loading = false;
     sleep(500);
@@ -446,19 +454,29 @@ public class RNZebraBluetoothPrinterModule extends ReactContextBaseJavaModule im
         //String pl = SGD.GET("device.languages", connection);
 
         //byte[] configLabel = getConfigLabel(zebraPrinter, label);
-          //connection.write(configLabel);
-//          if(type.equals("image")){
-//              zebraPrinter.printImage(label,x,y);
-//          } else if(type.equals("pdf")){
-        zebraPrinter.sendFileContents(label);
-        String[] fileNames = printer.retrieveFileNames();
-        for (String filename : fileNames) {
-            System.out.println(filename);
+        //connection.write(configLabel);
+
+
+
+        connection.open();
+        // zebraPrinter.sendFileContents(label);
+        // String[] fileNames = zebraPrinter.retrieveFileNames();
+        // for (String filename : fileNames) {
+        //   System.out.println(filename);
+        // }
+        for(int i = 0; i < qty; i++){
+          // try{
+            zebraPrinter.printImage(label,x,y);
+            sleep(1500);
+            success = true;
+            loading = false;
+            promise.resolve(success);
+          // }
+          // catch(Exception err){
+          //   dog.d("AN ERROR OCCURED");
+          // }
         }
-        // sleep(1500);
-        success = true;
-        loading = false;
-       promise.resolve(success);
+       
 
       } catch (Exception err) {
         success = false;
